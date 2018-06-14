@@ -7,6 +7,11 @@ class DB_FRED_Observations:
     
 
     def __init__(self, tableName):
+        '''
+            Create a process to connect to a local Postgres table.
+            :param self: The current class instance.
+            :param tableName: The name of the target table in the FRED_OBSERVATIONS schema.
+        '''
 
         try:
 
@@ -43,6 +48,11 @@ class DB_FRED_Observations:
 
    
     def insert(self, data):
+        '''
+            Insert mapped data into a local Postgres table.
+            :param self: The current class instance.
+            :param data: A dictionary containing mapped data.
+        '''
         
         conn = psycopg2.connect(self.cs)
         cursor = conn.cursor()
@@ -54,7 +64,11 @@ class DB_FRED_Observations:
         conn.commit()
 
     def delete(self, date):
-        
+        '''
+            Delete data based on the realtime_end date.
+        :param self: The current class instance.
+        :param date: The date to delete.
+        '''
         conn = psycopg2.connect(self.cs)
         cursor = conn.cursor()
         

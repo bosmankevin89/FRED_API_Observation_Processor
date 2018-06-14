@@ -10,14 +10,25 @@ from DB_FRED_Observations import DB_FRED_Observations
 # Series to process and the related tables.
 # (Series ID, Target Table name)
 seriesToProcess = [
-    #("GDPC1", "real_gross_domestic_product"),
-    ("UMCSENT", "University_of_Michigan_Consumer_Sentiment_Index")
-    #("UNRATE", "US_Civilian_Unemployment_Rate")
+    ("GDPC1", "real_gross_domestic_product"),
+    ("UMCSENT", "University_of_Michigan_Consumer_Sentiment_Index"),
+    ("UNRATE", "US_Civilian_Unemployment_Rate")
 ]
 
 
 
 def transferData(seriesID, targetTable):
+    '''
+        Connect to the FRED API and transfer data to a local Postgres database.
+    :param seriesID: The observation series ID.
+    :param targetTable: The name of the target table in the FRED_OBSERVATIONS schema.
+    '''
+
+    # Raise error on missing values
+    if not seriesID:
+        raise ValueError('Variable seriesID not defined')
+    if not targetTable:
+        raise ValueError('Variable targetTable not defined')
 
     #Get today's date in YYYY-MM-DD format for deletion
     today = datetime.datetime.today().strftime('%Y-%m-%d')
@@ -36,6 +47,7 @@ def transferData(seriesID, targetTable):
 
     jsonResponse = api.query(seriesID, rowsProcessed)
 
+    #Initialize expected row count
     totalRowCount = jsonResponse["count"]
 
     print('Observation Count: ' + str(totalRowCount))
@@ -58,6 +70,7 @@ def transferData(seriesID, targetTable):
             if observationValue == ".":
                 observationValue = None
 
+            # Create a dictionary of mapped data.
             data = {
                 "series_id" : seriesID, 
                 "realtime_start" : val["realtime_start"], 
@@ -66,6 +79,7 @@ def transferData(seriesID, targetTable):
                 "observation_value" : observationValue
             }
 
+            # Attempt to insert record.
             try:
                 db_RGDP.insert(data)
 
@@ -82,10 +96,12 @@ def transferData(seriesID, targetTable):
         # Reset JSON response based on the rowsProcessed as the current offest
         jsonResponse = api.query(seriesID, rowsProcessed)
 
+    # Print Final stats.
     print('Rows Processed: ' + str(rowsProcessed))
     print('Rows Inserted: ' + str(rowsInserted))
     print('Rows Error: ' + str(rowsError))
 
+    # Report overall success.
     if rowsError == 0:
         print('SUCCESS: Successfully loaded Series "' + seriesID + '"')
     else:
@@ -99,6 +115,7 @@ def transferData(seriesID, targetTable):
 ##################################
 try:
 
+    # Run transferData() process for each series noted.
     for seriesTuple in seriesToProcess:
         try:
             transferData(seriesTuple[0], seriesTuple[1])

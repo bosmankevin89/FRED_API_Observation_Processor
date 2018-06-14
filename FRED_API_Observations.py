@@ -8,6 +8,10 @@ class FRED_API_Observations:
     address = "https://api.stlouisfed.org/fred/series/observations"
 
     def __init__(self):
+        '''
+            Create a process to query the FRED API.
+            :param self: The current class instance.
+        '''
 
         try:
             # Set up the parameters we want to pass to the API.
@@ -24,6 +28,12 @@ class FRED_API_Observations:
 
    
     def query(self, series_id, offset):
+        '''
+            Send a request to the FRED observations API.
+            :param self: The current class instance.
+            :param series_id: The series ID to request.
+            :param offset: The current offset.
+        '''
         parameters = {
             "file_type" : "json",
             "order_by": "observation_date",
