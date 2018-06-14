@@ -19,7 +19,7 @@ Create or initialize a local Postgres database and run the script "FRED_Project/
 
 Create an account for [Federal Reserve Bank of St. Louis][FRED] and request an API key to query the FRED API.
 
-Once the database has been setup and an API key obtained, use the provided example configuration file "FRED_Project/config/config.example.ini" to create a configuration file named "/home/birdman/Development/CircleCi_Interview_Program/FRED_Project/config/config.ini".  Populate with the appropriate database and login information. 
+Once the database has been setup and an API key obtained, use the provided example configuration file "FRED_Project/config/config.example.ini" to create a configuration file named "FRED_Project/config/config.ini".  Populate with the appropriate database and login information. 
 
 Once the setup is complete, the main file may be run using the command:
 
